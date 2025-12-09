@@ -1,110 +1,118 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import axios from 'axios'
+import { useEffect, useState } from "react";
+import "./App.css";
+import axios from "axios";
 
 interface StatusMessage {
-  type: 'success' | 'error' | 'info'
-  message: string
+  type: "success" | "error" | "info";
+  message: string;
 }
 
 function App() {
-  const [invoiceData, setInvoiceData] = useState<object | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [statusMessage, setStatusMessage] = useState<StatusMessage | null>(null)
+  const [invoiceData, setInvoiceData] = useState<object | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<StatusMessage | null>(
+    null
+  );
 
   // Extract and parse invoice data from URL
   useEffect(() => {
     try {
       // Get the pathname (everything after the domain)
-      const pathname = window.location.pathname
-      
+      const pathname = window.location.pathname;
+
       // Remove leading slash if present
-      const jsonString = pathname.startsWith('/') ? pathname.slice(1) : pathname
-      
+      const jsonString = pathname.startsWith("/")
+        ? pathname.slice(1)
+        : pathname;
+
       if (jsonString) {
         // Decode URL-encoded characters
-        let decodedString = decodeURIComponent(jsonString)
+        let decodedString = decodeURIComponent(jsonString);
 
-        decodedString = decodedString.replace(/\//g, '');
-        
+        decodedString = decodedString.replace(/\//g, "");
+
         // Parse the JSON string
-        const parsedData = JSON.parse(decodedString)        
-        
+        const parsedData = JSON.parse(decodedString);
+
         // Store in state
-        setInvoiceData(parsedData)
-        
+        setInvoiceData(parsedData);
       }
     } catch (error) {
-      console.error('❌ Error parsing invoice data from URL:', error)
-      console.log('URL pathname:', window.location.pathname)
+      console.error("❌ Error parsing invoice data from URL:", error);
+      console.log("URL pathname:", window.location.pathname);
     }
-  }, [])
+  }, []);
 
   // API call for Event 1
   const handleEvent1 = async () => {
     // Check if invoice data is available
     if (!invoiceData) {
       setStatusMessage({
-        type: 'error',
-        message: 'No invoice data available. Please ensure the URL contains valid invoice data.'
-      })
-      console.error('❌ No invoice data available')
-      return
+        type: "error",
+        message:
+          "No invoice data available. Please ensure the URL contains valid invoice data.",
+      });
+      console.error("❌ No invoice data available");
+      return;
     }
 
-    setIsLoading(true)
-    setStatusMessage(null)
+    setIsLoading(true);
+    setStatusMessage(null);
 
     try {
-      console.log('🚀 Event 1 triggered - Sending invoice data to API')
-      console.log('📤 Request payload:', invoiceData)
+      console.log("🚀 Event 1 triggered - Sending invoice data to API");
+      console.log("📤 Request payload:", invoiceData);
 
       const response = await axios.post(
-        'http://localhost:9098/api/test/invoice',
+        "http://localhost:9098/api/test/invoice",
         invoiceData,
         {
           headers: {
-            'authorization': 'b eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsiX2lkIjoiNjhmNzk5ZjBjMjVmZDFlMzAxZjU1ZGQ1IiwidXNlcl9uYW1lIjoia2hhbGVkYXdmYXIifSwiaWF0IjoxNzY0NzYyMTA4LCJleHAiOjE3NjUyODA1MDh9LCJpYXQiOjE3NjUxOTU0NzMsImV4cCI6MTc2NTM2ODI3M30.e7-gdHZay4ClhphbKdiAlEPMwzXUroruXkCYNUsZwY0'
-          }
+            authorization:
+              "b eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsiX2lkIjoiNjhmNzk5ZjBjMjVmZDFlMzAxZjU1ZGQ1IiwidXNlcl9uYW1lIjoia2hhbGVkYXdmYXIifSwiaWF0IjoxNzY0NzYyMTA4LCJleHAiOjE3NjUyODA1MDh9LCJpYXQiOjE3NjUxOTU0NzMsImV4cCI6MTc2NTM2ODI3M30.e7-gdHZay4ClhphbKdiAlEPMwzXUroruXkCYNUsZwY0",
+          },
         }
-      )
+      );
 
-      const data = response.data
-      console.log('✅ API Response Success:', data)
+      const data = response.data;
+      console.log("✅ API Response Success:", data);
       setStatusMessage({
-        type: 'success',
-        message: 'Invoice successfully sent! API responded with success.'
-      })
+        type: "success",
+        message: "Invoice successfully sent! API responded with success.",
+      });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         // API responded with error
-        console.error('❌ API Response Error:', error.response.data)
+        console.error("❌ API Response Error:", error.response.data);
         setStatusMessage({
-          type: 'error',
-          message: `API Error: ${error.response.data.message || 'Failed to process invoice'}`
-        })
+          type: "error",
+          message: `API Error: ${
+            error.response.data.message || "Failed to process invoice"
+          }`,
+        });
       } else {
         // Network error
-        console.error('❌ Network Error:', error)
+        console.error("❌ Network Error:", error);
         setStatusMessage({
-          type: 'error',
-          message: 'Network error: Failed to connect to the API endpoint.'
-        })
+          type: "error",
+          message: "Network error: Failed to connect to the API endpoint.",
+        });
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleEvent2 = () => {
-    console.log('Event 2 triggered - API endpoint to be connected')
-    console.log('Invoice data available:', invoiceData)
+    console.log("Event 2 triggered - API endpoint to be connected");
+    console.log("Invoice data available:", invoiceData);
     setStatusMessage({
-      type: 'info',
-      message: 'Event 2 is not yet implemented. This is a placeholder for future functionality.'
-    })
+      type: "info",
+      message:
+        "Event 2 is not yet implemented. This is a placeholder for future functionality.",
+    });
     // TODO: Implement API call to endpoint 2
-  }
+  };
 
   return (
     <div className="app-container">
@@ -121,18 +129,19 @@ function App() {
           <div className="info-icon">ℹ️</div>
           <h2>Demo Page Information</h2>
           <p>
-            This is a demonstration page designed to trigger two different events
-            for testing and integration purposes. Each button below will call a
-            separate API endpoint to demonstrate event handling capabilities.
+            This is a demonstration page designed to trigger two different
+            events for testing and integration purposes. Each button below will
+            call a separate API endpoint to demonstrate event handling
+            capabilities.
           </p>
         </div>
 
         {statusMessage && (
           <div className={`status-message status-${statusMessage.type}`}>
             <span className="status-icon">
-              {statusMessage.type === 'success' && '✅'}
-              {statusMessage.type === 'error' && '❌'}
-              {statusMessage.type === 'info' && 'ℹ️'}
+              {statusMessage.type === "success" && "✅"}
+              {statusMessage.type === "error" && "❌"}
+              {statusMessage.type === "info" && "ℹ️"}
             </span>
             <span className="status-text">{statusMessage.message}</span>
           </div>
@@ -141,18 +150,20 @@ function App() {
         <div className="actions-section">
           <h3>Event Triggers</h3>
           <div className="buttons-container">
-            <button 
-              className={`event-button event-button-1 ${isLoading ? 'loading' : ''}`}
+            <button
+              className={`event-button event-button-1 ${
+                isLoading ? "loading" : ""
+              }`}
               onClick={handleEvent1}
               disabled={isLoading}
             >
-              <span className="button-icon">{isLoading ? '⏳' : '🚀'}</span>
+              <span className="button-icon">{isLoading ? "⏳" : "🚀"}</span>
               <span className="button-text">
-                {isLoading ? 'Sending...' : 'Trigger Event 1'}
+                {isLoading ? "Sending..." : "Trigger Event 1"}
               </span>
             </button>
-            
-            <button 
+
+            <button
               className="event-button event-button-2"
               onClick={handleEvent2}
               disabled={isLoading}
@@ -168,7 +179,7 @@ function App() {
         <p>Extra.com Demo Meeting • {new Date().getFullYear()}</p>
       </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
