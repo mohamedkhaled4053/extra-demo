@@ -63,7 +63,7 @@ function App() {
       console.log("📤 Request payload:", payload);
 
       const response = await axios.post(
-        "http://ai-prod.awfar.com/api/test/invoice/delivered/event",
+        "https://ai-prod.awfar.com//api/test/invoice/delivered/event",
         payload,
         {
           headers: {
