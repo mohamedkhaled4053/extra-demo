@@ -63,7 +63,7 @@ function App() {
       console.log("📤 Request payload:", payload);
 
       const response = await axios.post(
-        "http://35.188.89.1:9098/api/test/invoice/delivered/event",
+        "http://ai-prod.awfar.com/api/test/invoice/delivered/event",
         payload,
         {
           headers: {
