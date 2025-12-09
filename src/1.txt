@@ -1,0 +1,7 @@
+curl -X POST "http://localhost:9098/api/test/invoice/delivered/event" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsiX2lkIjoiNjhmNzk5ZjBjMjVmZDFlMzAxZjU1ZGQ1IiwidXNlcl9uYW1lIjoia2hhbGVkYXdmYXIifSwiaWF0IjoxNzY0NzYyMTA4LCJleHAiOjE3NjUyODA1MDh9LCJpYXQiOjE3NjUxOTU0NzMsImV4cCI6MTc2NTM2ODI3M30.e7-gdHZay4ClhphbKdiAlEPMwzXUroruXkCYNUsZwY0" \
+  -d '{
+    "contactId": "690b2cbf69859629bacfcf26",
+    "instanceId": "68ade2c701b64e873db4ac49"
+  }'

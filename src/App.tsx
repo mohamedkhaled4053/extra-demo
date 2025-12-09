@@ -7,9 +7,26 @@ interface StatusMessage {
   message: string;
 }
 
+interface InvoiceData {
+  contact: {
+    _id: string;
+    phone: string;
+  };
+  instanceId: string;
+  products?: Array<{
+    name: string;
+    price: number;
+    quantity: number;
+  }>;
+}
+
+// Authorization token for API requests
+const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsiX2lkIjoiNjhmNzk5ZjBjMjVmZDFlMzAxZjU1ZGQ1IiwidXNlcl9uYW1lIjoia2hhbGVkYXdmYXIifSwiaWF0IjoxNzY0NzYyMTA4LCJleHAiOjE3NjUyODA1MDh9LCJpYXQiOjE3NjUxOTU0NzMsImV4cCI6MTc2NTM2ODI3M30.e7-gdHZay4ClhphbKdiAlEPMwzXUroruXkCYNUsZwY0";
+
 function App() {
-  const [invoiceData, setInvoiceData] = useState<object | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
+  const [isLoading1, setIsLoading1] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
   const [statusMessage, setStatusMessage] = useState<StatusMessage | null>(
     null
   );
@@ -43,7 +60,7 @@ function App() {
     }
   }, []);
 
-  // API call for Event 1
+  // API call for Button 1 - Submit Invoice
   const handleEvent1 = async () => {
     // Check if invoice data is available
     if (!invoiceData) {
@@ -56,11 +73,11 @@ function App() {
       return;
     }
 
-    setIsLoading(true);
+    setIsLoading1(true);
     setStatusMessage(null);
 
     try {
-      console.log("🚀 Event 1 triggered - Sending invoice data to API");
+      console.log("🚀 Submit Invoice - Sending invoice data to API");
       console.log("📤 Request payload:", invoiceData);
 
       const response = await axios.post(
@@ -68,8 +85,7 @@ function App() {
         invoiceData,
         {
           headers: {
-            authorization:
-              "b eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsiX2lkIjoiNjhmNzk5ZjBjMjVmZDFlMzAxZjU1ZGQ1IiwidXNlcl9uYW1lIjoia2hhbGVkYXdmYXIifSwiaWF0IjoxNzY0NzYyMTA4LCJleHAiOjE3NjUyODA1MDh9LCJpYXQiOjE3NjUxOTU0NzMsImV4cCI6MTc2NTM2ODI3M30.e7-gdHZay4ClhphbKdiAlEPMwzXUroruXkCYNUsZwY0",
+            Authorization: `Bearer ${AUTH_TOKEN}`,
           },
         }
       );
@@ -78,7 +94,7 @@ function App() {
       console.log("✅ API Response Success:", data);
       setStatusMessage({
         type: "success",
-        message: "Invoice successfully sent! API responded with success.",
+        message: "Invoice successfully submitted! API responded with success.",
       });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -99,19 +115,85 @@ function App() {
         });
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading1(false);
     }
   };
 
-  const handleEvent2 = () => {
-    console.log("Event 2 triggered - API endpoint to be connected");
-    console.log("Invoice data available:", invoiceData);
-    setStatusMessage({
-      type: "info",
-      message:
-        "Event 2 is not yet implemented. This is a placeholder for future functionality.",
-    });
-    // TODO: Implement API call to endpoint 2
+  // API call for Button 2 - Mark as Delivered
+  const handleEvent2 = async () => {
+    // Check if invoice data is available
+    if (!invoiceData) {
+      setStatusMessage({
+        type: "error",
+        message:
+          "No invoice data available. Please ensure the URL contains valid invoice data.",
+      });
+      console.error("❌ No invoice data available");
+      return;
+    }
+
+    // Validate required fields
+    if (!invoiceData.contact?._id || !invoiceData.instanceId) {
+      setStatusMessage({
+        type: "error",
+        message:
+          "Invalid invoice data. Missing contact ID or instance ID.",
+      });
+      console.error("❌ Missing required fields in invoice data");
+      return;
+    }
+
+    setIsLoading2(true);
+    setStatusMessage(null);
+
+    try {
+      // Transform the data for delivered event endpoint
+      const payload = {
+        contactId: invoiceData.contact._id,
+        instanceId: invoiceData.instanceId,
+      };
+
+      console.log("⚡ Mark as Delivered - Sending event to API");
+      console.log("📤 Request payload:", payload);
+
+      const response = await axios.post(
+        "http://localhost:9098/api/test/invoice/delivered/event",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+      console.log("✅ API Response Success:", data);
+      setStatusMessage({
+        type: "success",
+        message: "Invoice marked as delivered! Event sent successfully.",
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        // API responded with error
+        console.error("❌ API Response Error:", error.response.data);
+        setStatusMessage({
+          type: "error",
+          message: `API Error: ${
+            error.response.data.message || "Failed to mark invoice as delivered"
+          }`,
+        });
+      } else {
+        // Network error
+        console.error("❌ Network Error:", error);
+        setStatusMessage({
+          type: "error",
+          message: "Network error: Failed to connect to the API endpoint.",
+        });
+      }
+    } finally {
+      setIsLoading2(false);
+    }
   };
 
   return (
@@ -152,24 +234,28 @@ function App() {
           <div className="buttons-container">
             <button
               className={`event-button event-button-1 ${
-                isLoading ? "loading" : ""
+                isLoading1 ? "loading" : ""
               }`}
               onClick={handleEvent1}
-              disabled={isLoading}
+              disabled={isLoading1 || isLoading2}
             >
-              <span className="button-icon">{isLoading ? "⏳" : "🚀"}</span>
+              <span className="button-icon">{isLoading1 ? "⏳" : "📝"}</span>
               <span className="button-text">
-                {isLoading ? "Sending..." : "Trigger Event 1"}
+                {isLoading1 ? "Submitting..." : "Submit Invoice"}
               </span>
             </button>
 
             <button
-              className="event-button event-button-2"
+              className={`event-button event-button-2 ${
+                isLoading2 ? "loading" : ""
+              }`}
               onClick={handleEvent2}
-              disabled={isLoading}
+              disabled={isLoading1 || isLoading2}
             >
-              <span className="button-icon">⚡</span>
-              <span className="button-text">Trigger Event 2</span>
+              <span className="button-icon">{isLoading2 ? "⏳" : "✅"}</span>
+              <span className="button-text">
+                {isLoading2 ? "Processing..." : "Mark as Delivered"}
+              </span>
             </button>
           </div>
         </div>
