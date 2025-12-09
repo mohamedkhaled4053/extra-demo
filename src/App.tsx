@@ -1,14 +1,47 @@
+import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
+  const [invoiceData, setInvoiceData] = useState<object | null>(null)
+
+  // Extract and parse invoice data from URL
+  useEffect(() => {
+    try {
+      // Get the pathname (everything after the domain)
+      const pathname = window.location.pathname
+      
+      // Remove leading slash if present
+      const jsonString = pathname.startsWith('/') ? pathname.slice(1) : pathname
+      
+      if (jsonString) {
+        // Decode URL-encoded characters
+        let decodedString = decodeURIComponent(jsonString)
+
+        decodedString = decodedString.replace(/\//g, '');
+        
+        // Parse the JSON string
+        const parsedData = JSON.parse(decodedString)        
+        
+        // Store in state
+        setInvoiceData(parsedData)
+        
+      }
+    } catch (error) {
+      console.error('❌ Error parsing invoice data from URL:', error)
+      console.log('URL pathname:', window.location.pathname)
+    }
+  }, [])
+
   // Placeholder functions for API calls - to be implemented later
   const handleEvent1 = () => {
     console.log('Event 1 triggered - API endpoint to be connected')
+    console.log('Invoice data available:', invoiceData)
     // TODO: Implement API call to endpoint 1
   }
 
   const handleEvent2 = () => {
     console.log('Event 2 triggered - API endpoint to be connected')
+    console.log('Invoice data available:', invoiceData)
     // TODO: Implement API call to endpoint 2
   }
 
