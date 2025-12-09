@@ -1,42 +1,199 @@
-#root {
-  max-width: 1280px;
+/* App Container */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+  background: linear-gradient(180deg, rgba(255, 107, 0, 0.1) 0%, transparent 100%);
+}
+
+.logo-container {
+  margin-bottom: 1.5rem;
+}
+
+.extra-logo {
+  display: inline-block;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
+  padding: 0.5rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 1rem 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: #aaa;
+  font-weight: 400;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  max-width: 900px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
+}
+
+/* Info Card */
+.info-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 107, 0, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.info-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h2 {
+  color: #ff8c00;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+}
+
+.info-card p {
+  color: #ccc;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Actions Section */
+.actions-section {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.actions-section h3 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.buttons-container {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Event Buttons */
+.event-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  min-width: 250px;
+  justify-content: center;
+}
+
+.event-button-1 {
+  background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
+  color: white;
+}
+
+.event-button-1:hover {
+  background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(255, 107, 0, 0.4);
+}
+
+.event-button-1:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(255, 107, 0, 0.3);
+}
+
+.event-button-2 {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  color: white;
+}
+
+.event-button-2:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(37, 99, 235, 0.4);
+}
+
+.event-button-2:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+}
+
+.button-icon {
+  font-size: 1.5rem;
+}
+
+.button-text {
+  font-family: inherit;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .hero-subtitle {
+    font-size: 1rem;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  
+  .buttons-container {
+    flex-direction: column;
+    align-items: center;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  
+  .event-button {
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .info-card {
+    padding: 1.5rem;
+  }
 }
