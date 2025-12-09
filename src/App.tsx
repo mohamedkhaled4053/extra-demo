@@ -81,7 +81,7 @@ function App() {
       console.log("📤 Request payload:", invoiceData);
 
       const response = await axios.post(
-        "http://localhost:9098/api/test/invoice",
+        "http://34.44.221.212:9098/api/test/invoice",
         invoiceData,
         {
           headers: {
@@ -157,7 +157,7 @@ function App() {
       console.log("📤 Request payload:", payload);
 
       const response = await axios.post(
-        "http://localhost:9098/api/test/invoice/delivered/event",
+        "http://34.44.221.212:9098/api/test/invoice/delivered/event",
         payload,
         {
           headers: {
