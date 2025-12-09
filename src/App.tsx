@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import axios from 'axios'
 
 interface StatusMessage {
   type: 'success' | 'error' | 'info'
@@ -58,35 +59,38 @@ function App() {
       console.log('🚀 Event 1 triggered - Sending invoice data to API')
       console.log('📤 Request payload:', invoiceData)
 
-      const response = await fetch('http://localhost:9098/api/test/invoice', {
-        method: 'POST',
-        body: JSON.stringify(invoiceData),
-        headers: {
-          'authorization': '"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsiX2lkIjoiNjhmNzk5ZjBjMjVmZDFlMzAxZjU1ZGQ1IiwidXNlcl9uYW1lIjoia2hhbGVkYXdmYXIifSwiaWF0IjoxNzY0NzYyMTA4LCJleHAiOjE3NjUyODA1MDh9LCJpYXQiOjE3NjUxOTU0NzMsImV4cCI6MTc2NTM2ODI3M30.e7-gdHZay4ClhphbKdiAlEPMwzXUroruXkCYNUsZwY0"'
+      const response = await axios.post(
+        'http://localhost:9098/api/test/invoice',
+        invoiceData,
+        {
+          headers: {
+            'authorization': 'b eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsiX2lkIjoiNjhmNzk5ZjBjMjVmZDFlMzAxZjU1ZGQ1IiwidXNlcl9uYW1lIjoia2hhbGVkYXdmYXIifSwiaWF0IjoxNzY0NzYyMTA4LCJleHAiOjE3NjUyODA1MDh9LCJpYXQiOjE3NjUxOTU0NzMsImV4cCI6MTc2NTM2ODI3M30.e7-gdHZay4ClhphbKdiAlEPMwzXUroruXkCYNUsZwY0'
+          }
         }
+      )
+
+      const data = response.data
+      console.log('✅ API Response Success:', data)
+      setStatusMessage({
+        type: 'success',
+        message: 'Invoice successfully sent! API responded with success.'
       })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        console.log('✅ API Response Success:', data)
-        setStatusMessage({
-          type: 'success',
-          message: 'Invoice successfully sent! API responded with success.'
-        })
-      } else {
-        console.error('❌ API Response Error:', data)
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        // API responded with error
+        console.error('❌ API Response Error:', error.response.data)
         setStatusMessage({
           type: 'error',
-          message: `API Error: ${data.message || 'Failed to process invoice'}`
+          message: `API Error: ${error.response.data.message || 'Failed to process invoice'}`
+        })
+      } else {
+        // Network error
+        console.error('❌ Network Error:', error)
+        setStatusMessage({
+          type: 'error',
+          message: 'Network error: Failed to connect to the API endpoint.'
         })
       }
-    } catch (error) {
-      console.error('❌ Network Error:', error)
-      setStatusMessage({
-        type: 'error',
-        message: 'Network error: Failed to connect to the API endpoint.'
-      })
     } finally {
       setIsLoading(false)
     }
